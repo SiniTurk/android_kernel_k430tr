@@ -1,0 +1,8 @@
+config BU52033NVX
+	bool "BU52033NVX Hall IC for MediaTek package"
+	default n
+	help
+	  It support different hallic sensor.
+          If this option is set,
+	  it will support
+          BU52033NVX Hall IC.

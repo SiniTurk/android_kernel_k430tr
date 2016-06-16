@@ -1,0 +1,14 @@
+
+config MTK_HALLIC
+	bool "HALLIC for MediaTek package"
+	default n
+	help
+	  It support hallic sensor.
+
+config CORNER_QUICK_COVER
+	bool "CORNER_QUICK_COVER for LGE package"
+	default n
+	help
+	  It support corner case.
+	  
+source "drivers/misc/mediatek/hallic/bu52033nvx/Kconfig"

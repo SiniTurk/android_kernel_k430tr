@@ -1,0 +1,13 @@
+# RTC Related
+config MTK_RTC
+	bool "MediaTek Real Time Clock Support"
+	default n
+	---help---
+	  MediaTek RTC driver
+
+config RTC_INTF_SECCLK
+        bool "Android secure clock driver"
+        depends on MTK_RTC
+        default n
+        help
+         Driver for supporting Android secure clock

@@ -1,0 +1,1172 @@
+
+/dts-v1/;
+
+#include "mt6735.dtsi"
+#include "cust.dtsi"
+#include "mt6735_k6p_touch.dtsi"
+
+/ {
+	memory@40000000 {
+		device_type = "memory";
+		reg = <0 0x40000000 0 0x80000000>;
+	};
+
+	led0:led@0 {
+		compatible = "mediatek,red";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led1:led@1 {
+		compatible = "mediatek,green";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led2:led@2 {
+		compatible = "mediatek,blue";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led3:led@3 {
+		compatible = "mediatek,jogball-backlight";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led4:led@4 {
+		compatible = "mediatek,keyboard-backlight";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led5:led@5 {
+		compatible = "mediatek,button-backlight";
+		led_mode = <0>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	led6:led@6 {
+		compatible = "mediatek,lcd-backlight";
+		led_mode = <4>;
+		data = <1>;
+		pwm_config = <0 0 0 0 0>;
+	};
+	vibrator0:vibrator@0 {
+		compatible = "mediatek,vibrator";
+		vib_timer = <25>;
+		vib_limit = <9>;
+		vib_vol= <7>;
+	};
+};
+
+/* charger ic */
+&rt9536 {
+	status = "okay";
+	pinctrl-names = "default", "charging", "not_charging";
+	pinctrl-0 = <&rt9536_default>;
+	pinctrl-1 = <&rt9536_charging>;
+	pinctrl-2 = <&rt9536_not_charging>;
+	en_set = <8>;
+	chgsb = <9>;
+};
+&pio {
+	rt9536_default: rt9536_default_cfg {
+		chgsb {
+			pins = <PINMUX_GPIO9__FUNC_GPIO9>;
+			input-enable;
+		};
+	};
+
+	rt9536_charging: rt9536_charging_cfg {
+		en_set {
+			pins = <PINMUX_GPIO8__FUNC_GPIO8>;
+			output-low;
+		};
+	};
+	rt9536_not_charging: rt9536_not_charging_cfg {
+		en_set {
+			pins = <PINMUX_GPIO8__FUNC_GPIO8>;
+			output-high;
+		};
+	};
+};
+
+&ssw {
+	pinctrl-1 = <>;
+	pinctrl-2 = <>;
+};
+
+/* fuel gauge */
+&bat_meter {
+	    DS2704_N = "fg,tocad-battery-data";
+		DS2704_L = "fg,tocad-battery-data";
+		DS2704_C = "fg,tocad-battery-data";
+		ISL6296_N = "fg,tocad-battery-data";
+		ISL6296_L = "fg,tocad-battery-data";
+		ISL6296_C = "fg,tocad-battery-data";
+		RA4301_VC0 = "fg,tocad-battery-data";
+		RA4301_VC1 = "fg,lgc-battery-data";
+		RA4301_VC2 = "fg,tocad-battery-data";
+		SW3800_VC0 = "fg,lgc-battery-data";
+		SW3800_VC1 = "fg,tocad-battery-data";
+		SW3800_VC2 = "fg,lgc-battery-data";
+};
+
+/ {
+	/* LGC 2125mA Battery 3.3V cut off */
+	LGC_BATTERY: fg,lgc-battery-data {
+		car_tune_value = <99 >;
+		/* Qmax for 0mA */
+		q_max_pos_50 = <2039 >;
+		q_max_pos_25 = <2042 >;
+		q_max_pos_0 = <1767 >;
+		q_max_neg_10 = <1224 >;
+		/* Qmax for 400mA, said high current */
+		q_max_pos_50_h_current = <2026 >;
+		q_max_pos_25_h_current = <2006 >;
+		q_max_pos_0_h_current = <1490 >;
+		q_max_neg_10_h_current = <756>;
+
+		battery_profile_t0_num = <92 >;
+		battery_profile_t0 = <
+			0 4298 	2 4274 	5 4254 	7 4235 	10 4216
+			12 4198 	15 4178 	17 4160 	20 4142 	22 4118
+			24 4083 	27 4047 	29 4019 	32 3998 	34 3978
+			37 3961 	39 3945 	41 3930 	44 3916 	46 3903
+			49 3890 	51 3878 	54 3869 	56 3859 	58 3851
+			61 3842 	63 3834 	66 3826 	68 3819 	71 3811
+			73 3803 	76 3795 	78 3785 	80 3776 	83 3768
+			84 3761 	86 3755 	87 3750 	88 3746 	89 3741
+			90 3737 	90 3734 	91 3732 	91 3730 	92 3728
+			92 3726 	93 3726 	93 3722 	93 3722 	94 3721
+			94 3720 	94 3719 	94 3718 	95 3716 	95 3716
+			95 3716 	95 3714 	96 3714 	96 3714 	96 3713
+			96 3713 	96 3712 	97 3712 	97 3711 	97 3711
+			97 3711 	97 3711 	97 3710 	97 3709 	98 3709
+			98 3710 	98 3709 	98 3709 	98 3708 	98 3708
+			98 3708 	99 3708 	99 3707 	99 3707 	99 3707
+			99 3707 	99 3706 	99 3707 	99 3707 	99 3706
+			99 3706 	100 3706 	100 3705 	100 3705 	100 3705
+			100 3706 	100 3300 >;
+
+		battery_profile_t1_num = <92 >;
+		battery_profile_t1 = <
+			0 4331 	2 4310 	3 4291 	5 4268 	7 4226
+			8 4184 	10 4161 	12 4143 	14 4125 	15 4109
+			17 4093 	19 4080 	20 4064 	22 4048 	24 4031
+			25 4014 	27 4000 	29 3986 	31 3973 	32 3960
+			34 3948 	36 3934 	37 3919 	39 3904 	41 3890
+			42 3878 	44 3867 	46 3857 	47 3848 	49 3840
+			51 3833 	53 3826 	54 3819 	56 3812 	58 3807
+			59 3802 	61 3797 	63 3792 	64 3788 	66 3786
+			68 3783 	69 3780 	71 3777 	73 3773 	74 3768
+			76 3762 	78 3755 	80 3746 	81 3738 	83 3728
+			85 3719 	86 3708 	88 3701 	90 3696 	91 3690
+			93 3687 	94 3684 	94 3682 	95 3679 	96 3676
+			96 3673 	96 3669 	97 3665 	97 3661 	98 3656
+			98 3650 	98 3645 	98 3639 	98 3634 	99 3629
+			99 3624 	99 3620 	99 3615 	99 3611 	99 3607
+			99 3604 	99 3601 	99 3598 	99 3595 	99 3592
+			100 3589 	100 3588 	100 3585 	100 3582 	100 3580
+			100 3578 	100 3576 	100 3575 	100 3572 	100 3571
+			100 3568 	100 3300  >;
+
+		battery_profile_t2_num = <92 >;
+		battery_profile_t2 = <
+			0 4334 	1 4310 	3 4289 	4 4271 	6 4253
+			7 4236 	9 4219 	10 4201 	12 4184 	13 4168
+			15 4152 	16 4136 	18 4120 	19 4105 	20 4090
+			22 4076 	23 4062 	25 4047 	26 4032 	28 4018
+			29 4003 	31 3992 	32 3980 	34 3969 	35 3959
+			37 3947 	38 3936 	39 3924 	41 3911 	42 3896
+			44 3883 	45 3869 	47 3858 	48 3848 	50 3840
+			51 3832 	53 3825 	54 3818 	56 3813 	57 3807
+			58 3802 	60 3797 	61 3793 	63 3789 	64 3785
+			66 3781 	67 3778 	69 3775 	70 3773 	72 3770
+			73 3768 	75 3763 	76 3757 	77 3751 	79 3744
+			80 3737 	82 3730 	83 3721 	85 3710 	86 3698
+			88 3686 	89 3681 	91 3677 	92 3673 	94 3668
+			95 3650 	96 3592 	98 3505 	99 3403 	99 3370
+			100 3350 	100 3336 	100 3327 	100 3320 	100 3315
+			100 3311 	100 3308 	100 3306 	100 3303 	100 3302
+			100 3299 	100 3298 	100 3298 	100 3297 	100 3297
+			100 3296 	100 3294 	100 3292 	100 3292 	100 3290
+			100 3289 	100 3289 >;
+
+		battery_profile_t3_num = <92 >;
+		battery_profile_t3 = <
+			0 4343 	1 4320 	3 4300 	4 4281 	6 4263
+			7 4245 	9 4227 	10 4209 	12 4192 	13 4175
+			15 4159 	16 4143 	18 4125 	19 4110 	21 4094
+			22 4079 	23 4064 	25 4050 	26 4035 	28 4022
+			29 4009 	31 3995 	32 3984 	34 3971 	35 3959
+			37 3948 	38 3938 	40 3926 	41 3916 	42 3904
+			44 3891 	45 3874 	47 3860 	48 3849 	50 3840
+			51 3832 	53 3824 	54 3818 	56 3811 	57 3805
+			59 3800 	60 3795 	62 3790 	63 3785 	64 3782
+			66 3777 	67 3774 	69 3771 	70 3766 	72 3758
+			73 3749 	75 3743 	76 3737 	78 3731 	79 3725
+			81 3720 	82 3713 	83 3703 	85 3693 	86 3681
+			88 3668 	89 3665 	91 3662 	92 3657 	94 3652
+			95 3633 	97 3577 	98 3494 	100 3363 	100 3280
+			100 3266 	100 3260 	100 3258 	100 3256 	100 3253
+			100 3254 	100 3254 	100 3254 	100 3254 	100 3253
+			100 3252 	100 3251 	100 3250 	100 3250 	100 3249
+			100 3248 	100 3247 	100 3246 	100 3245 	100 3244
+			100 3243 	100 3243 >;
+
+		battery_profile_temperature_num = <92 >;
+		battery_profile_temperature = <
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 >;
+
+		r_profile_t0_num = <92 >;
+		r_profile_t0 = <
+			813 4298 	813 4274 	845 4254 	858 4235 	870 4216
+			885 4198 	890 4178 	905 4160 	943 4142 	985 4118
+			1035 4083 	1148 4047 	1228 4019 	1265 3998 	1278 3978
+			1283 3961 	1288 3945 	1293 3930 	1298 3916 	1303 3903
+			1303 3890 	1308 3878 	1315 3869 	1328 3859 	1338 3851
+			1345 3842 	1355 3834 	1360 3826 	1378 3819 	1385 3811
+			1398 3803 	1408 3795 	1410 3785 	1425 3776 	1420 3768
+			1403 3761 	1390 3755 	1378 3750 	1365 3746 	1355 3741
+			1343 3737 	1338 3734 	1330 3732 	1328 3730 	1323 3728
+			1315 3726 	1315 3726 	1308 3722 	1308 3722 	1305 3721
+			1303 3720 	1303 3719 	1295 3718 	1293 3716 	1290 3716
+			1290 3716 	1288 3714 	1290 3714 	1285 3714 	1285 3713
+			1285 3713 	1280 3712 	1280 3712 	1283 3711 	1280 3711
+			1280 3711 	1283 3711 	1280 3710 	1278 3709 	1275 3709
+			1280 3710 	1275 3709 	1273 3709 	1275 3708 	1275 3708
+			1270 3708 	1273 3708 	1270 3707 	1270 3707 	1273 3707
+			1268 3707 	1268 3706 	1270 3707 	1268 3707 	1270 3706
+			1270 3706 	1270 3706 	1268 3705 	1263 3705 	1268 3705
+			1268 3706 	250 3300 >;
+
+		r_profile_t1_num = <92 >;
+		r_profile_t1 = <
+			385 4331 	385 4310 	398 4291 	408 4268 	425 4226
+			520 4184 	563 4161 	575 4143 	580 4125 	588 4109
+			590 4093 	615 4080 	633 4064 	645 4048 	650 4031
+			645 4014 	645 4000 	645 3986 	643 3973 	650 3960
+			655 3948 	655 3934 	655 3919 	648 3904 	645 3890
+			645 3878 	648 3867 	653 3857 	658 3848 	663 3840
+			675 3833 	683 3826 	688 3819 	693 3812 	703 3807
+			710 3802 	720 3797 	728 3792 	735 3788 	755 3786
+			765 3783 	780 3780 	803 3777 	825 3773 	848 3768
+			875 3762 	908 3755 	940 3746 	983 3738 	1018 3728
+			1058 3719 	1083 3708 	1120 3701 	1165 3696 	1210 3690
+			1218 3687 	1213 3684 	1205 3682 	1198 3679 	1190 3676
+			1183 3673 	1173 3669 	1165 3665 	1155 3661 	1145 3656
+			1128 3650 	1113 3645 	1103 3639 	1085 3634 	1078 3629
+			1063 3624 	1053 3620 	1045 3615 	1030 3611 	1023 3607
+			1020 3604 	1003 3601 	1003 3598 	993 3595 	983 3592
+			978 3589 	970 3588 	970 3585 	968 3582 	958 3580
+			953 3578 	943 3576 	940 3575 	945 3572 	940 3571
+			933 3568 	255 3300 >;
+
+		r_profile_t2_num = <92 >;
+		r_profile_t2 = <
+			165 4334 	165 4310 	160 4289 	163 4271 	165 4253
+			170 4236 	175 4219 	175 4201 	178 4184 	180 4168
+			180 4152 	188 4136 	193 4120 	195 4105 	198 4090
+			200 4076 	208 4062 	210 4047 	213 4032 	215 4018
+			215 4003 	220 3992 	223 3980 	228 3969 	228 3959
+			228 3947 	233 3936 	233 3924 	230 3911 	223 3896
+			218 3883 	203 3869 	198 3858 	195 3848 	195 3840
+			193 3832 	195 3825 	193 3818 	198 3813 	193 3807
+			195 3802 	193 3797 	198 3793 	200 3789 	203 3785
+			203 3781 	205 3778 	205 3775 	208 3773 	208 3770
+			215 3768 	215 3763 	215 3757 	218 3751 	223 3744
+			228 3737 	238 3730 	243 3721 	248 3710 	253 3698
+			248 3686 	258 3681 	268 3677 	273 3673 	313 3668
+			348 3650 	373 3592 	438 3505 	508 3403 	425 3370
+			378 3350 	343 3336 	323 3327 	305 3320 	295 3315
+			285 3311 	275 3308 	268 3306 	270 3303 	260 3302
+			255 3299 	250 3298 	253 3298 	258 3297 	245 3297
+			243 3296 	258 3294 	258 3292 	245 3292 	260 3290
+			263 3289 	248 3289 >;
+
+		r_profile_t3_num = <92 >;
+		r_profile_t3 = <
+			130 4343 	130 4320 	133 4300 	133 4281 	133 4263
+			135 4245 	135 4227 	133 4209 	135 4192 	135 4175
+			138 4159 	138 4143 	135 4125 	138 4110 	140 4094
+			143 4079 	143 4064 	145 4050 	143 4035 	148 4022
+			150 4009 	150 3995 	155 3984 	155 3971 	158 3959
+			160 3948 	165 3938 	165 3926 	170 3916 	170 3904
+			165 3891 	153 3874 	145 3860 	143 3849 	140 3840
+			140 3832 	138 3824 	140 3818 	140 3811 	140 3805
+			143 3800 	145 3795 	145 3790 	145 3785 	150 3782
+			150 3777 	153 3774 	155 3771 	153 3766 	145 3758
+			140 3749 	143 3743 	140 3737 	143 3731 	143 3725
+			148 3720 	145 3713 	148 3703 	148 3693 	148 3681
+			145 3668 	150 3665 	155 3662 	158 3657 	163 3652
+			165 3633 	173 3577 	185 3494 	203 3363 	200 3280
+			165 3266 	155 3260 	148 3258 	143 3256 	138 3253
+			138 3254 	135 3254 	138 3254 	138 3254 	135 3253
+			135 3252 	130 3251 	133 3250 	130 3250 	133 3249
+			135 3248 	133 3247 	135 3246 	133 3245 	135 3244
+			135 3243 	133 3243 >;
+
+		r_profile_temperature_num = <92 >;
+		r_profile_temperature = <
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 >;
+	};
+
+	/* TOCAD 2125mA Battery 3.3V cut off */
+	TOCAD_BATTERY: fg,tocad-battery-data {
+		car_tune_value = <99 >;
+		/* Qmax for 0mA */
+		q_max_pos_50 = <2043 >;
+		q_max_pos_25 = <2038 >;
+		q_max_pos_0 = <1837 >;
+		q_max_neg_10 = <1565 >;
+		/* Qmax for 400mA, said high current */
+		q_max_pos_50_h_current = <2031 >;
+		q_max_pos_25_h_current = <2018 >;
+		q_max_pos_0_h_current = <1690 >;
+		q_max_neg_10_h_current = <1210>;
+
+		battery_profile_t0_num = <92 >;
+		battery_profile_t0 = <
+			0 4299 	2 4271 	4 4248 	6 4225 	8 4202
+			10 4180 	11 4158 	13 4136 	15 4115 	17 4095
+			19 4076 	21 4058 	23 4040 	25 4023 	27 4005
+			29 3989 	31 3974 	32 3958 	34 3943 	36 3928
+			38 3912 	40 3896 	42 3880 	44 3866 	46 3852
+			48 3840 	50 3829 	52 3820 	53 3811 	55 3804
+			57 3798 	59 3793 	61 3790 	63 3786 	65 3782
+			67 3779 	69 3776 	71 3772 	72 3768 	74 3765
+			76 3759 	78 3753 	80 3746 	82 3737 	84 3728
+			86 3717 	88 3704 	89 3700 	90 3697 	91 3695
+			92 3693 	92 3691 	93 3689 	93 3688 	94 3686
+			94 3685 	95 3683 	95 3682 	95 3681 	96 3679
+			96 3678 	96 3677 	96 3676 	97 3675 	97 3675
+			97 3673 	97 3673 	97 3672 	97 3671 	98 3671
+			98 3671 	98 3669 	98 3669 	98 3668 	98 3668
+			98 3667 	99 3668 	99 3666 	99 3667 	99 3666
+			99 3666 	99 3665 	99 3665 	99 3666 	99 3665
+			99 3665 	100 3665 	100 3664 	100 3663 	100 3663
+			100 3663 	100 3300 >;
+
+		battery_profile_t1_num = <92 >;
+		battery_profile_t1 = <
+			0 4319 	2 4285 	3 4257 	5 4232 	7 4210
+			8 4189 	10 4169 	11 4149 	13 4130 	15 4112
+			16 4094 	18 4077 	20 4062 	21 4046 	23 4030
+			24 4014 	26 3999 	28 3986 	29 3973 	31 3961
+			33 3948 	34 3936 	36 3921 	38 3907 	39 3892
+			41 3877 	42 3863 	44 3851 	46 3840 	47 3831
+			49 3823 	51 3817 	52 3809 	54 3804 	55 3798
+			57 3793 	59 3790 	60 3786 	62 3782 	64 3780
+			65 3779 	67 3777 	68 3776 	70 3773 	72 3770
+			73 3767 	75 3764 	76 3759 	78 3753 	80 3745
+			81 3735 	83 3724 	85 3711 	86 3694 	88 3674
+			89 3653 	91 3631 	93 3607 	94 3581 	96 3559
+			97 3551 	97 3546 	97 3543 	98 3539 	98 3536
+			98 3534 	99 3532 	99 3530 	99 3529 	99 3527
+			99 3526 	99 3524 	99 3523 	99 3522 	99 3521
+			99 3519 	100 3518 	100 3518 	100 3517 	100 3517
+			100 3515 	100 3514 	100 3513 	100 3512 	100 3511
+			100 3510 	100 3511 	100 3510 	100 3508 	100 3507
+			100 3507 	100 3300 >;
+
+		battery_profile_t2_num = <92 >;
+		battery_profile_t2 = <
+			0 4338 	1 4314 	3 4294 	4 4276 	6 4258
+			7 4240 	9 4222 	10 4205 	12 4189 	13 4171
+			15 4155 	16 4139 	18 4122 	19 4106 	21 4091
+			22 4075 	23 4061 	25 4046 	26 4033 	28 4018
+			29 4005 	31 3992 	32 3979 	34 3968 	35 3956
+			37 3945 	38 3934 	40 3922 	41 3909 	42 3895
+			44 3880 	45 3865 	47 3852 	48 3842 	50 3833
+			51 3825 	53 3818 	54 3812 	56 3806 	57 3801
+			59 3796 	60 3792 	62 3788 	63 3785 	64 3781
+			66 3779 	67 3777 	69 3775 	70 3773 	72 3771
+			73 3769 	75 3766 	76 3763 	78 3757 	79 3751
+			81 3745 	82 3739 	83 3729 	85 3716 	86 3703
+			88 3686 	89 3675 	91 3662 	92 3649 	94 3629
+			95 3596 	97 3550 	98 3463 	100 3343 	100 3287
+			100 3275 	100 3270 	100 3267 	100 3265 	100 3264
+			100 3263 	100 3262 	100 3260 	100 3260 	100 3260
+			100 3260 	100 3260 	100 3259 	100 3259 	100 3258
+			100 3258 	100 3257 	100 3257 	100 3256 	100 3254
+			100 3254 	100 3254 >;
+
+		battery_profile_t3_num = <92 >;
+		battery_profile_t3 = <
+			0 4342 	1 4322 	3 4301 	4 4284 	6 4266
+			7 4248 	9 4229 	10 4212 	12 4194 	13 4177
+			15 4160 	16 4144 	18 4127 	19 4112 	20 4096
+			22 4081 	23 4065 	25 4050 	26 4036 	28 4022
+			29 4008 	31 3995 	32 3983 	34 3970 	35 3959
+			37 3947 	38 3936 	39 3926 	41 3914 	42 3901
+			44 3887 	45 3872 	47 3857 	48 3845 	50 3835
+			51 3828 	53 3820 	54 3813 	56 3807 	57 3801
+			58 3797 	60 3791 	61 3787 	63 3784 	64 3780
+			66 3777 	67 3774 	69 3771 	70 3768 	72 3763
+			73 3755 	74 3748 	76 3745 	77 3740 	79 3733
+			80 3728 	82 3723 	83 3715 	85 3703 	86 3692
+			88 3676 	89 3668 	91 3661 	92 3649 	93 3635
+			95 3614 	96 3569 	98 3484 	99 3368 	100 3263
+			100 3253 	100 3250 	100 3247 	100 3245 	100 3245
+			100 3244 	100 3244 	100 3243 	100 3243 	100 3242
+			100 3243 	100 3241 	100 3241 	100 3242 	100 3241
+			100 3241 	100 3240 	100 3241 	100 3240 	100 3240
+			100 3240 	100 3240 >;
+
+		battery_profile_temperature_num = <92 >;
+		battery_profile_temperature = <
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 >;
+
+		r_profile_t0_num = <92 >;
+		r_profile_t0 = <
+			630 4299 	630 4271 	648 4248 	660 4225 	673 4202
+			690 4180 	705 4158 	725 4136 	745 4115 	770 4095
+			790 4076 	810 4058 	830 4040 	853 4023 	873 4005
+			895 3989 	920 3974 	940 3958 	960 3943 	978 3928
+			988 3912 	990 3896 	985 3880 	985 3866 	983 3852
+			980 3840 	980 3829 	985 3820 	985 3811 	990 3804
+			998 3798 	1003 3793 	1018 3790 	1025 3786 	1035 3782
+			1048 3779 	1065 3776 	1078 3772 	1095 3768 	1118 3765
+			1130 3759 	1148 3753 	1168 3746 	1185 3737 	1210 3728
+			1230 3717 	1255 3704 	1253 3700 	1245 3697 	1240 3695
+			1233 3693 	1230 3691 	1223 3689 	1223 3688 	1218 3686
+			1215 3685 	1210 3683 	1208 3682 	1203 3681 	1198 3679
+			1198 3678 	1195 3677 	1190 3676 	1190 3675 	1188 3675
+			1188 3673 	1185 3673 	1183 3672 	1180 3671 	1180 3671
+			1178 3671 	1175 3669 	1175 3669 	1175 3668 	1173 3668
+			1173 3667 	1170 3668 	1168 3666 	1170 3667 	1173 3666
+			1168 3666 	1165 3665 	1163 3665 	1168 3666 	1165 3665
+			1165 3665 	1168 3665 	1163 3664 	1163 3663 	1158 3663
+			1160 3663 	250 3300 >;
+
+		r_profile_t1_num = <92 >;
+		r_profile_t1 = <
+			345 4319 	345 4285 	378 4257 	395 4232 	415 4210
+			433 4189 	450 4169 	468 4149 	480 4130 	498 4112
+			510 4094 	518 4077 	530 4062 	533 4046 	538 4030
+			543 4014 	545 3999 	548 3986 	553 3973 	558 3961
+			558 3948 	558 3936 	550 3921 	545 3907 	540 3892
+			528 3877 	520 3863 	518 3851 	515 3840 	513 3831
+			518 3823 	523 3817 	523 3809 	528 3804 	530 3798
+			535 3793 	540 3790 	545 3786 	548 3782 	553 3780
+			565 3779 	570 3777 	580 3776 	585 3773 	598 3770
+			605 3767 	620 3764 	630 3759 	643 3753 	655 3745
+			668 3735 	685 3724 	708 3711 	725 3694 	743 3674
+			763 3653 	783 3631 	808 3607 	845 3581 	898 3559
+			878 3551 	868 3546 	858 3543 	853 3539 	843 3536
+			835 3534 	833 3532 	828 3530 	825 3529 	820 3527
+			818 3526 	815 3524 	810 3523 	808 3522 	808 3521
+			798 3519 	800 3518 	798 3518 	800 3517 	793 3517
+			790 3515 	788 3514 	788 3513 	785 3512 	780 3511
+			785 3510 	780 3511 	780 3510 	780 3508 	778 3507
+			780 3507 	258 3300 >;
+
+		r_profile_t2_num = <92 >;
+		r_profile_t2 = <
+			155 4338 	155 4314 	150 4294 	150 4276 	153 4258
+			160 4240 	163 4222 	165 4205 	170 4189 	168 4171
+			173 4155 	178 4139 	183 4122 	183 4106 	190 4091
+			190 4075 	195 4061 	198 4046 	200 4033 	200 4018
+			208 4005 	210 3992 	213 3979 	220 3968 	220 3956
+			220 3945 	225 3934 	228 3922 	225 3909 	218 3895
+			208 3880 	193 3865 	183 3852 	180 3842 	178 3833
+			180 3825 	180 3818 	178 3812 	180 3806 	180 3801
+			178 3796 	180 3792 	180 3788 	183 3785 	185 3781
+			188 3779 	190 3777 	190 3775 	190 3773 	193 3771
+			193 3769 	193 3766 	193 3763 	190 3757 	190 3751
+			190 3745 	198 3739 	200 3729 	200 3716 	208 3703
+			213 3686 	218 3675 	220 3662 	225 3649 	245 3629
+			240 3596 	240 3550 	220 3463 	240 3343 	220 3287
+			190 3275 	175 3270 	168 3267 	163 3265 	165 3264
+			163 3263 	160 3262 	153 3260 	153 3260 	150 3260
+			153 3260 	153 3260 	155 3259 	153 3259 	155 3258
+			153 3258 	155 3257 	155 3257 	158 3256 	153 3254
+			153 3254 	158 3254 >;
+
+		r_profile_t3_num = <92 >;
+		r_profile_t3 = <
+			115 4342 	115 4322 	113 4301 	118 4284 	118 4266
+			115 4248 	115 4229 	118 4212 	115 4194 	118 4177
+			118 4160 	120 4144 	120 4127 	123 4112 	125 4096
+			125 4081 	125 4065 	125 4050 	128 4036 	128 4022
+			128 4008 	130 3995 	133 3983 	135 3970 	140 3959
+			143 3947 	148 3936 	153 3926 	155 3914 	153 3901
+			150 3887 	140 3872 	128 3857 	123 3845 	118 3835
+			118 3828 	120 3820 	118 3813 	118 3807 	118 3801
+			123 3797 	123 3791 	125 3787 	128 3784 	128 3780
+			133 3777 	133 3774 	133 3771 	133 3768 	130 3763
+			123 3755 	120 3748 	123 3745 	125 3740 	120 3733
+			123 3728 	125 3723 	123 3715 	123 3703 	125 3692
+			125 3676 	125 3668 	130 3661 	133 3649 	150 3635
+			160 3614 	158 3569 	153 3484 	155 3368 	160 3263
+			135 3253 	125 3250 	118 3247 	118 3245 	115 3245
+			113 3244 	110 3244 	113 3243 	110 3243 	110 3242
+			110 3243 	108 3241 	108 3241 	110 3242 	108 3241
+			108 3241 	108 3240 	108 3241 	105 3240 	108 3240
+			108 3240 	110 3240 >;
+
+		r_profile_temperature_num = <92 >;
+		r_profile_temperature = <
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 	0 0 	0 0 	0 0
+			0 0 	0 0 >;
+	};
+};
+
+ /* sensor standardization */
+ &i2c3 {
+	#address-cells = <1>;
+	#size-cells = <0>;
+	gsensor@1d {
+		compatible = "mediatek,gsensor";
+		reg = <0x1d>;
+		status = "okay";
+		i2c_num				= <3>;
+		i2c_addr				= <0x1d 0 0 0>;
+		direction				= <1>;
+		power_id				= <0xffff>;
+		power_vol				= <0>;
+		firlen					= <0>;
+		is_batch_supported			= <0>;
+	};
+	msensor@1e {
+		compatible = "mediatek,msensor";
+		reg = <0x1e>;
+		status = "okay";
+		i2c_num				= <3>;
+		i2c_addr				= <0x1e 0 0 0>;
+		direction				= <1>;
+		power_id				= <0xffff>;
+		power_vol				= <0>;
+		is_batch_supported	= <0>;
+	};
+	alsps@38 {
+		compatible = "mediatek,alsps";
+		reg = <0x38>;
+		status = "okay";
+		i2c_num				= <3>;
+		i2c_addr				= <0x38 0 0 0>;
+		polling_mode_ps			= <0>;
+		polling_mode_als		= <1>;
+		power_id				= <0xffff>;
+		power_vol				= <0>;
+		als_level = <0 328 861 1377 3125 7721 7767 12621 23062 28430 33274 47116 57694 57694 65535>;
+		als_value = <0 133 304 502 1004 2005 3058 5005 8008 10010 12000 16000 20000 20000 20000 20000>;
+		near_offset		=  <16>;
+		far_offset		=  <4>;
+		is_batch_supported_ps	= <0>;
+		is_batch_supported_als	= <0>;
+	};
+};
+/* sensor gpio standization */
+&als {
+	pinctrl-names = "pin_default", "pin_cfg";
+	pinctrl-0 = <&alsps_intpin_default>;
+	pinctrl-1 = <&alsps_intpin_cfg>;
+	status = "okay";
+};
+
+&pio {
+	alsps_intpin_cfg: alspspincfg {
+
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO82__FUNC_GPIO82>;
+			slew-rate = <0>;
+			bias-pull-up = <00>;
+		};
+	};
+
+	alsps_intpin_default: alspsdefaultcfg {
+
+	};
+};
+/* sensor end */
+
+&accdet {
+	accdet-mic-vol = <7>;
+	headset-mode-setting = <0x500 0x500 1 0x1f0 0x800 0x800 0x20>;
+	accdet-plugout-debounce = <20>;
+	/*1:ACC mode, 2:low cost without in bias, 6:low cost with in bias*/
+	accdet-mic-mode = <1>;
+	/*0--MD_MAX--UP_MAX--DW_MAX*/
+	headset-three-key-threshold = <0 80 220 500>;
+	/*0--MD_MAX--VOICE_MAX--UP_MAX--DW_MAX*/
+	headset-four-key-threshold = <0 80 105 220 500>;
+	/* ACCDET GPIO standardization ACC mode use */
+	pinctrl-names = "default", "state_eint_as_int";
+	pinctrl-0 = <&accdet_pins_default>;
+	pinctrl-1 = <&accdet_pins_eint_as_int>;
+	status = "okay";
+};
+&pio {
+	accdet_pins_default: accdetdefault {
+	};
+	accdet_pins_eint_as_int: accdeteint@0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO6__FUNC_GPIO6>;
+			slew-rate = <0>;
+			bias-disable;
+		};
+	};
+};
+&touch {
+	tpd-resolution = <720 1280>;
+	use-tpd-button = <0>;
+	tpd-key-num = <3>;
+	tpd-key-local= <139 172 158 0>;
+	tpd-key-dim-local = <90 883 100 40 230 883 100 40 370 883 100 40 0 0 0 0>;
+	tpd-max-touch-num = <5>;
+	tpd-filter-enable = <1>;
+	tpd-filter-pixel-density = <124>;
+	tpd-filter-custom-prameters = <0 0 0 0 0 0 0 0 0 0 0 0>;
+	tpd-filter-custom-speed = <0 0 0>;
+	pinctrl-names = "default", "state_eint_as_int", "state_eint_output0", "state_eint_output1",
+		"state_rst_output0", "state_rst_output1";
+	pinctrl-0 = <&CTP_pins_default>;
+	pinctrl-1 = <&CTP_pins_eint_as_int>;
+	pinctrl-2 = <&CTP_pins_eint_output0>;
+	pinctrl-3 = <&CTP_pins_eint_output1>;
+	pinctrl-4 = <&CTP_pins_rst_output0>;
+	pinctrl-5 = <&CTP_pins_rst_output1>;
+	status = "okay";
+};
+
+&mtkfb {
+	reg = <0x7f000000 0x1000000>;
+};
+
+
+&pio {
+	CTP_pins_default: eint0default {
+	};
+	CTP_pins_eint_as_int: eint@0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO10__FUNC_GPIO10>;
+			slew-rate = <0>;
+			bias-disable;
+		};
+	};
+	CTP_pins_eint_output0: eintoutput0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO10__FUNC_GPIO10>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+	CTP_pins_eint_output1: eintoutput1 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO10__FUNC_GPIO10>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+	CTP_pins_rst_output0: rstoutput0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO62__FUNC_GPIO62>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+	CTP_pins_rst_output1: rstoutput1 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO62__FUNC_GPIO62>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+};
+/* TOUCH end */
+
+/* CAMERA GPIO standardization */
+&pio {
+	camera_pins_cam0_rst0: cam0@0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO44__FUNC_GPIO44>;/*GPIO_CAMERA_CMRST_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-low;/*direction out used only. output_low or high*/
+		};
+	};
+	camera_pins_cam0_rst1: cam0@1 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO44__FUNC_GPIO44>;/*GPIO_CAMERA_CMRST_PIN*/
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+	camera_pins_cam1_rst0: cam1@0 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO68__FUNC_GPIO68>;/*GPIO_CAMERA_CMRST1_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-low;/*direction out used only. output_low or high*/
+		};
+	};
+	camera_pins_cam1_rst1: cam1@1 {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO68__FUNC_GPIO68>;/*GPIO_CAMERA_CMRST1_PIN*/
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+	camera_pins_cam_flash_en0: cam@0 {
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO42__FUNC_GPIO42>;/*GPIO_CAMERA_FLASH_EN_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-low;/*direction out used only. output_low or high*/
+		};
+	};
+	camera_pins_cam_flash_en1: cam@1 {
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO42__FUNC_GPIO42>;/*GPIO_CAMERA_FLASH_EN_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-high;
+		};
+	};
+	camera_pins_cam_flash_tx0: cam@2 {
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO43__FUNC_GPIO43>;/*GPIO_CAMERA_FLASH_TX_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-low;/*direction out used only. output_low or high*/
+		};
+	};
+	camera_pins_cam_flash_tx1: cam@3 {
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO43__FUNC_GPIO43>;/*GPIO_CAMERA_FLASH_TX_PIN*/
+			slew-rate = <1>; /*direction 0:in, 1:out*/
+			output-high;/*direction out used only. output_low or high*/
+		};
+	};
+
+	camera_pins_default: camdefault {
+	};
+
+};
+
+&kd_camera_hw1 {
+	pinctrl-names = "default", "cam0_rst0", "cam0_rst1", "cam1_rst0", "cam1_rst1",
+		"cam_flash_en0", "cam_flash_en1", "cam_flash_tx0", "cam_flash_tx1";
+	pinctrl-0 = <&camera_pins_default>;
+	pinctrl-1 = <&camera_pins_cam0_rst0>;
+	pinctrl-2 = <&camera_pins_cam0_rst1>;
+	pinctrl-3 = <&camera_pins_cam1_rst0>;
+	pinctrl-4 = <&camera_pins_cam1_rst1>;
+	pinctrl-5 = <&camera_pins_cam_flash_en0>;
+	pinctrl-6 = <&camera_pins_cam_flash_en1>;
+	pinctrl-7 = <&camera_pins_cam_flash_tx0>;
+	pinctrl-8 = <&camera_pins_cam_flash_tx1>;
+	status = "okay";
+
+};
+/* CAMERA GPIO end */
+
+/* CONSYS GPIO standardization */
+&pio {
+	consys_pins_default: default {
+
+	};
+
+	gpslna_pins_init: gpslna@0 {
+
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO79__FUNC_GPIO79>;
+			slew-rate = <0>;
+			bias-disable;
+			output-low;
+		};
+	};
+
+	gpslna_pins_oh: gpslna@1 {
+
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO79__FUNC_GPIO79>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+
+	gpslna_pins_ol: gpslna@2 {
+
+	    pins_cmd_dat {
+			pins = <PINMUX_GPIO79__FUNC_GPIO79>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+
+};
+
+&consys {
+	pinctrl-names = "default", "gps_lna_state_init", "gps_lna_state_oh", "gps_lna_state_ol";
+	pinctrl-0 = <&consys_pins_default>;
+	pinctrl-1 = <&gpslna_pins_init>;
+	pinctrl-2 = <&gpslna_pins_oh>;
+	pinctrl-3 = <&gpslna_pins_ol>;
+	status = "okay";
+
+};
+/* CONSYS end */
+
+/* mmc start */
+&mmc0 {
+		clk_src = /bits/ 8 <MSDC50_CLKSRC_400MHZ>;
+		bus-width = <8>;
+		max-frequency = <200000000>;
+		cap-mmc-highspeed;
+		msdc-sys-suspend;
+		mmc-ddr-1_8v;
+		mmc-hs200-1_8v;
+		mmc-hs400-1_8v;
+		non-removable;
+		pinctl = <&mmc0_pins_default>;
+		register_setting = <&mmc0_register_setting_default>;
+		host_function = /bits/ 8 <MSDC_EMMC>;
+		bootable;
+		status = "okay";
+};
+
+&mmc1 {
+		clk_src = /bits/ 8 <MSDC30_CLKSRC_200MHZ>;
+		bus-width = <4>;
+		max-frequency = <200000000>;
+		msdc-sys-suspend;
+		cap-sd-highspeed;
+		sd-uhs-sdr12;
+		sd-uhs-sdr25;
+		sd-uhs-sdr50;
+		sd-uhs-sdr104;
+		sd-uhs-ddr50;
+		pinctl = <&mmc1_pins_default>;
+		pinctl_sdr104 = <&mmc1_pins_sdr104>;
+		pinctl_sdr50 = <&mmc1_pins_sdr50>;
+		pinctl_ddr50 = <&mmc1_pins_ddr50>;
+		register_setting = <&mmc1_register_setting_default>;
+		host_function = /bits/ 8 <MSDC_SD>;
+		cd_level = /bits/ 8 <MSDC_CD_LOW>;
+		cd-gpios = <&pio 5 0>;
+		status = "okay";
+};
+
+&pio {
+	mmc0_pins_default: mmc0@default {
+			pins_cmd {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_dat {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_clk {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_rst {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_ds {
+				drive-strength = /bits/ 8 <2>;
+			};
+	};
+
+	mmc0_register_setting_default: mmc0@register_default {
+		dat0rddly      = /bits/ 8 <0>;
+		dat1rddly      = /bits/ 8 <0>;
+		dat2rddly      = /bits/ 8 <0>;
+		dat3rddly      = /bits/ 8 <0>;
+		dat4rddly      = /bits/ 8 <0>;
+		dat5rddly      = /bits/ 8 <0>;
+		dat6rddly      = /bits/ 8 <0>;
+		dat7rddly      = /bits/ 8 <0>;
+		datwrddly      = /bits/ 8 <0>;
+		cmdrrddly      = /bits/ 8 <0>;
+		cmdrddly       = /bits/ 8 <0>;
+		cmd_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+		rdata_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+		wdata_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+
+		ett-hs200-cells = <12>;
+		ett-hs200-default = <OFFSET_MSDC_PATCH_BIT0	MSDC_PB0_INT_DAT_LATCH_CK_SEL 0x0
+			OFFSET_MSDC_PATCH_BIT0	MSDC_PB0_CKGEN_MSDC_DLY_SEL   0x0
+			OFFSET_MSDC_PATCH_BIT1	MSDC_PB1_CMD_RSP_TA_CNTR      0x1
+			OFFSET_MSDC_IOCON		MSDC_IOCON_RSPL               0x0
+			OFFSET_MSDC_PAD_TUNE0	MSDC_PAD_TUNE0_CMDRDLY        0x7
+			OFFSET_MSDC_PAD_TUNE0	MSDC_PAD_TUNE0_CMDRRDLY       0xb
+			OFFSET_MSDC_PATCH_BIT1		MSDC_PB1_WRDAT_CRCS_TA_CNTR   0x1
+			OFFSET_MSDC_PAD_TUNE0	MSDC_PAD_TUNE0_DATWRDLY       0xb
+			OFFSET_MSDC_IOCON			MSDC_IOCON_W_D0SPL            0x0
+			OFFSET_MSDC_DAT_RDDLY0		MSDC_DAT_RDDLY0_D0            0x7
+			OFFSET_MSDC_PAD_TUNE0	MSDC_PAD_TUNE0_DATRRDLY       0x9
+			OFFSET_MSDC_IOCON		MSDC_IOCON_R_D_SMPL           0x0>;
+
+		ett-hs400-cells = <8>;
+		ett-hs400-default = <OFFSET_MSDC_PATCH_BIT0	MSDC_PB0_INT_DAT_LATCH_CK_SEL	0x0
+			OFFSET_MSDC_PATCH_BIT0		MSDC_PB0_CKGEN_MSDC_DLY_SEL		0x0
+			OFFSET_EMMC50_PAD_DS_TUNE	MSDC_EMMC50_PAD_DS_TUNE_DLY1	0x2
+			OFFSET_EMMC50_PAD_DS_TUNE	MSDC_EMMC50_PAD_DS_TUNE_DLY3	0x10
+			OFFSET_MSDC_PATCH_BIT1			MSDC_PB1_CMD_RSP_TA_CNTR	0x1
+			OFFSET_MSDC_IOCON		MSDC_IOCON_RSPL				0x0
+			OFFSET_MSDC_PAD_TUNE0			MSDC_PAD_TUNE0_CMDRDLY		0x6
+			OFFSET_MSDC_PAD_TUNE0		MSDC_PAD_TUNE0_CMDRRDLY		0x6>;
+	};
+
+	mmc1_pins_default: mmc1@default {
+			pins_cmd {
+				drive-strength = /bits/ 8 <3>;
+			};
+			pins_dat {
+				drive-strength = /bits/ 8 <3>;
+			};
+			pins_clk {
+				drive-strength = /bits/ 8 <3>;
+			};
+	};
+
+	mmc1_pins_sdr104: mmc1@sdr104 {
+			pins_cmd {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_dat {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_clk {
+				drive-strength = /bits/ 8 <3>;
+			};
+	};
+
+	mmc1_pins_sdr50: mmc1@sdr50 {
+			pins_cmd {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_dat {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_clk {
+				drive-strength = /bits/ 8 <3>;
+			};
+	};
+
+	mmc1_pins_ddr50: mmc1@ddr50 {
+			pins_cmd {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_dat {
+				drive-strength = /bits/ 8 <2>;
+			};
+			pins_clk {
+				drive-strength = /bits/ 8 <3>;
+			};
+	};
+
+	mmc1_register_setting_default: mmc1@register_default {
+				dat0rddly      = /bits/ 8 <0>;
+				dat1rddly      = /bits/ 8 <0>;
+				dat2rddly      = /bits/ 8 <0>;
+				dat3rddly      = /bits/ 8 <0>;
+				datwrddly      = /bits/ 8 <0>;
+				cmdrrddly      = /bits/ 8 <0>;
+				cmdrddly       = /bits/ 8 <0>;
+				cmd_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+				rdata_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+				wdata_edge = /bits/ 8 <MSDC_SMPL_FALLING>;
+	};
+};
+/* mmc end */
+
+/* NFC GPIO standardization */
+&pio {
+	nfc_default: default {
+
+	};
+
+	nfc_ven_high: state_ven_high {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO4__FUNC_GPIO4>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+
+	nfc_ven_low: state_ven_low {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO4__FUNC_GPIO4>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+
+	nfc_rst_high: state_rst_high {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO3__FUNC_GPIO3>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+
+	nfc_rst_low: state_rst_low {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO3__FUNC_GPIO3>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+
+	nfc_eint_high: state_eint_high {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO1__FUNC_GPIO1>;
+			slew-rate = <1>;
+			output-high;
+		};
+	};
+
+	nfc_eint_low: state_eint_low {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO1__FUNC_GPIO1>;
+			slew-rate = <1>;
+			output-low;
+		};
+	};
+
+	nfc_irq_init: state_irq_init {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO2__FUNC_GPIO2>;
+			slew-rate = <0>;
+			bias-pull-down = <00>;
+		};
+	};
+};
+
+&nfc {
+	pinctrl-names = "default", "ven_high", "ven_low", "rst_high", "rst_low", "eint_high", "eint_low", "irq_init";
+	pinctrl-0 = <&nfc_default>;
+	pinctrl-1 = <&nfc_ven_high>;
+	pinctrl-2 = <&nfc_ven_low>;
+	pinctrl-3 = <&nfc_rst_high>;
+	pinctrl-4 = <&nfc_rst_low>;
+	pinctrl-5 = <&nfc_eint_high>;
+	pinctrl-6 = <&nfc_eint_low>;
+	pinctrl-7 = <&nfc_irq_init>;
+	status = "okay";
+};
+/* NFC end */
+
+/* USB GPIO Kernal Standardization start */
+&pio {
+	usb_default: usb_default {
+	};
+
+	gpio0_mode1_iddig: iddig_irq_init {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO0__FUNC_IDDIG>;
+			slew-rate = <0>;
+			bias-pull-up = <00>;
+		};
+	};
+
+	gpio83_mode2_drvvbus: drvvbus_init {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO83__FUNC_GPIO83>;
+			slew-rate = <1>;
+			bias-pull-down = <00>;
+		};
+	};
+
+	gpio83_mode2_drvvbus_low: drvvbus_low {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO83__FUNC_GPIO83>;
+			slew-rate = <1>;
+			output-low;
+			bias-pull-down = <00>;
+		};
+	};
+
+	gpio83_mode2_drvvbus_high: drvvbus_high {
+		pins_cmd_dat {
+			pins = <PINMUX_GPIO83__FUNC_GPIO83>;
+			slew-rate = <1>;
+			output-high;
+			bias-pull-down = <00>;
+		};
+	};
+};
+
+&usb0 {
+	iddig_gpio = <0 1>;
+	pinctrl-names = "usb_default", "iddig_irq_init", "drvvbus_init", "drvvbus_low", "drvvbus_high";
+	pinctrl-0 = <&usb_default>;
+	pinctrl-1 = <&gpio0_mode1_iddig>;
+	pinctrl-2 = <&gpio83_mode2_drvvbus>;
+	pinctrl-3 = <&gpio83_mode2_drvvbus_low>;
+	pinctrl-4 = <&gpio83_mode2_drvvbus_high>;
+	status = "okay";
+};
+/* USB GPIO Kernal Standardization end */
+
